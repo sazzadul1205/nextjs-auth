@@ -19,7 +19,7 @@ export const GetTime = async () => {
 const page = async () => {
   const currentTime = await GetTime();
   const session = await getServerSession(authOptions);
-  console.log({ session });
+  // console.log({ session });
 
   return (
     <div>
