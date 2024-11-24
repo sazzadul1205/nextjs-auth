@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -96,7 +97,16 @@ const Navbar = () => {
         </div>
 
         {/* Navbar End */}
-        <div className="navbar-end">
+        <div className="navbar-end space-x-4">
+          <Image
+            src={session?.user?.image}
+            alt={session?.user?.name}
+            width={50}
+            height={50}
+          />
+          <p>{session?.user?.name}</p>
+          <p>{session?.user?.type}</p>
+
           {session ? (
             <button
               onClick={() => signOut()}
