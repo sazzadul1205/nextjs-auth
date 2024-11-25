@@ -21,6 +21,7 @@ const Navbar = () => {
   ];
 
   const handleNavigation = () => router.push("/api/auth/signin");
+  const handleSignUp = () => router.push("/api/auth/signup");
 
   return (
     <div className={`navbar bg-purple-500`}>
@@ -64,8 +65,8 @@ const Navbar = () => {
               </ul>
             )}
           </div>
-          <Link href="/" className="btn btn-ghost text-xl">
-            Next Hero
+          <Link href="/" className="font-bold text-3xl text-red-400">
+            Next <span className="text-blue-400">Hero</span>
           </Link>
         </div>
 
@@ -90,19 +91,19 @@ const Navbar = () => {
         </div>
 
         {/* Navbar End */}
-        <div className="navbar-end space-x-4">
+        <div className="navbar-end">
           {session?.user?.image ? (
             <Image
               src={session?.user?.image}
               alt={session?.user?.name || "User Avatar"}
-              width={40}
-              height={20}
-              className="rounded-full"
+              width={30}
+              height={30}
+              className=" mr-5"
             />
           ) : (
             <></>
           )}
-          <div className="text-center">
+          <div className="text-center mr-5">
             <p>{session?.user?.name}</p>
             <p>{session?.user?.type}</p>
           </div>
@@ -115,12 +116,20 @@ const Navbar = () => {
               Log Out
             </button>
           ) : (
-            <button
-              onClick={handleNavigation}
-              className="px-10 py-3 rounded-full font-semibold bg-red-500 hover:bg-red-700 text-white"
-            >
-              Log In
-            </button>
+            <>
+              <button
+                onClick={handleSignUp}
+                className="px-10 py-3 border-2 border-red-700 font-semibold bg-red-500 hover:bg-red-700 text-white"
+              >
+                Sign Up
+              </button>
+              <button
+                onClick={handleNavigation}
+                className="px-10 py-3 border-2 border-red-700 font-semibold bg-red-500 hover:bg-red-700 text-white"
+              >
+                Log In
+              </button>
+            </>
           )}
         </div>
       </div>
