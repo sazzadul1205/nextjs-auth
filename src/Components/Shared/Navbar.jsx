@@ -92,9 +92,9 @@ const Navbar = () => {
 
         {/* Navbar End */}
         <div className="navbar-end">
-          {session?.user?.image ? (
+          {session?.user?.image || session?.user?.imageUrl ? (
             <Image
-              src={session?.user?.image}
+              src={session?.user?.image || session?.user?.imageUrl}
               alt={session?.user?.name || "User Avatar"}
               width={30}
               height={30}

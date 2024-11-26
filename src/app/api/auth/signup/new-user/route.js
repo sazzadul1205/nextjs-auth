@@ -11,7 +11,7 @@ export const POST = async (request) => {
     const userCollection = db.collection("Users"); // Ensure collection name is correct
     const res = userCollection.insertOne(newUser);
 
-    console.log("User added:", res);
+    // console.log("User added:", res);
     return new Response(JSON.stringify({ message: "New User Created" }), {
       status: 201,
     });

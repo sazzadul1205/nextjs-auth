@@ -1,5 +1,9 @@
+import connectDB from "@/lib/connectDB";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import GitHubProvider from "next-auth/providers/github";
 
 export const authOptions = {
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
@@ -31,7 +35,10 @@ export const authOptions = {
           return null;
         }
         if (email) {
-          const currentUser = users.find((user) => user.email === email);
+          // const currentUser = users.find((user) => user.email === email);
+          const db = await connectDB();
+          const currentUser = await db.collection("Users").findOne({ email });
+
           if (currentUser && currentUser.password === password) {
             return currentUser;
           }
@@ -39,6 +46,20 @@ export const authOptions = {
         return null; // Return null if user is not found or password doesn't match
       },
     }),
+    GoogleProvider({
+      clientId: process.env.NEXT_GOOGLE_CLIENT_ID,
+      clientSecret: process.env.NEXT_GOOGLE_CLIENT_SECRET,
+    }),
+    FacebookProvider({
+      clientId: process.env.NEXT_FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.NEXT_FACEBOOK_CLIENT_SECRET,
+    }),
+    GitHubProvider({
+      clientId: process.env.NEXT_GITHUB_ID,
+      clientSecret: process.env.NEXT_GITHUB_SECRET,
+    }),
+
+
   ],
 
   callbacks: {
@@ -61,32 +82,5 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
-const users = [
-  {
-    id: 1,
-    name: "Sazzadul",
-    email: "psazzadul@gmail.com",
-    type: "Admin",
-    password: "Pritom1205",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 2,
-    name: "Pritom",
-    email: "Sazzadul14@gmail.com",
-    type: "Manager",
-    password: "Pritom1205",
-    image: "https://picsum.photos/200/300",
-  },
-  {
-    id: 3,
-    name: "SPritom",
-    email: "psazzadul1205@gmail.com",
-    type: "User",
-    password: "Pritom1205",
-    image: "https://picsum.photos/200/300",
-  },
-];
 
 export { handler as GET, handler as POST };

@@ -7,7 +7,12 @@ const SignupPage = () => {
     name: "",
     email: "",
     password: "",
+    imageUrl: "",
+    role: "Member", // Default role
   });
+
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [loading, setLoading] = useState(false); // To manage the button state
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,13 +21,14 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Disable the button
     const newUser = {
-      name: formData.name, // Use formData to get the values
+      name: formData.name,
       email: formData.email,
       password: formData.password,
+      imageUrl: formData.imageUrl,
+      role: formData.role,
     };
-
-    console.log(newUser);
 
     try {
       const response = await fetch(
@@ -36,22 +42,53 @@ const SignupPage = () => {
         }
       );
 
-      console.log(response);
+      if (response.ok) {
+        setAlert({ type: "success", message: "Signup successful!" });
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          imageUrl: "",
+          role: "Member",
+        }); // Reset form
+      } else {
+        const errorData = await response.json();
+        setAlert({
+          type: "error",
+          message: errorData?.message || "Signup failed. Please try again.",
+        });
+      }
     } catch (error) {
-      console.error("Request failed:", error);
+      setAlert({
+        type: "error",
+        message: "An error occurred. Please check your network connection.",
+      });
+    } finally {
+      setLoading(false); // Re-enable the button
     }
   };
 
   return (
-    <div className="flex  justify-center min-h-screen ">
+    <div className="flex justify-center min-h-screen">
       <form
         onSubmit={handleSubmit}
-        className="p-8 bg-white rounded-lg shadow-md w-full max-w-md h-[500px] mt-40 text-black"
+        className="p-8 bg-white rounded-lg shadow-md w-full max-w-md mt-40 text-black h-full"
       >
         <h2 className="text-2xl font-bold text-center mb-6 text-red-500 shadow-2xl">
           Sign Up
         </h2>
 
+        {alert.message && (
+          <div
+            className={`mb-4 p-4 text-white rounded ${
+              alert.type === "success" ? "bg-green-500" : "bg-red-500"
+            }`}
+          >
+            {alert.message}
+          </div>
+        )}
+
+        {/* Form Fields */}
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -109,11 +146,55 @@ const SignupPage = () => {
           />
         </div>
 
+        <div className="mb-4">
+          <label
+            htmlFor="imageUrl"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Image URL
+          </label>
+          <input
+            type="text"
+            id="imageUrl"
+            name="imageUrl"
+            value={formData.imageUrl}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+            placeholder="Enter image URL"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="role"
+            className="block text-gray-700 font-semibold mb-2"
+          >
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+          >
+            <option value="Admin">Admin</option>
+            <option value="Member">Member</option>
+            <option value="Moderator">Moderator</option>
+          </select>
+        </div>
+
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-4 px-4 rounded-md hover:bg-blue-600 transition duration-200"
+          disabled={loading}
+          className={`w-full py-4 px-4 rounded-md text-white transition duration-200 ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          Sign Up
+          {loading ? "Processing..." : "Sign Up"}
         </button>
       </form>
     </div>
